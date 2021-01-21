@@ -22,33 +22,22 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.*;
 import net.minecraft.world.GameType;
-import net.minecraft.world.World;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
-import net.minecraftforge.fml.network.FMLMCRegisterPacketHandler;
-import net.minecraftforge.fml.network.NetworkRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 
-import javax.tools.Tool;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.List;
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -57,7 +46,6 @@ public class MiningSpeed
 {
     public final static String MODID = "miningspeed2";
     public final static String MINING_SPEED_CONTROL_ENABLED_TAG = "mining_speed_enabled";
-    // Directly reference a log4j logger.
     private static final Logger log = LogManager.getLogger();
     private static final Minecraft minecraft = Minecraft.getInstance();
     private static final PlayerController controller = minecraft.playerController;
@@ -74,6 +62,7 @@ public class MiningSpeed
         Networking.register();
     }
 
+    //Function used to purposley lag the server for testing with bad tps.
     //@SubscribeEvent
 //    void lagServer(TickEvent.ServerTickEvent event)
 //    {
@@ -193,6 +182,9 @@ public class MiningSpeed
         if (world == null)
             return;
 
+        if(minecraft.playerController == null)
+            return;
+
         if (minecraft.playerController.getCurrentGameType().isCreative())
             return;
 
@@ -226,8 +218,8 @@ public class MiningSpeed
     /**
      * Replaces PlayerController.clickBlock
      *
-     * @param blockPos
-     * @param direction
+     * @param blockPos the position of the block being clicked
+     * @param direction the direction the player is looking at the block
      * @return Return value seems to have no effect. True if the action succeeded, false if it did not, e.g. due to restrictions.
      */
     public boolean clickBlock(BlockPos blockPos, Direction direction)
@@ -235,6 +227,10 @@ public class MiningSpeed
         ClientPlayerEntity player = minecraft.player;
         ClientWorld world = minecraft.world;
         PlayerController controller = minecraft.playerController;
+        //region null check
+        if(controller == null)
+            return true;
+        ///endregion
         GameType currentGameType = controller.getCurrentGameType();
 
         //region null checks
@@ -317,11 +313,18 @@ public class MiningSpeed
     /**
      * Replaces part of sendBlockClickToController
      *
-     * @param event
+     * @param event the event
      */
     private void handlePlayerBreakingBlock(InputEvent.ClickInputEvent event)
     {
         BlockRayTraceResult objectMouseOver = (BlockRayTraceResult) minecraft.objectMouseOver;
+        //region null checks
+        if(objectMouseOver == null)
+            return;
+
+        if(minecraft.player == null)
+            return;
+        //endregion
         BlockPos blockPos = objectMouseOver.getPos();
         Direction direction = objectMouseOver.getFace();
 
@@ -349,18 +352,24 @@ public class MiningSpeed
     /**
      * replaces PlayerController.onPlayerDamageBlock
      *
-     * @param blockPos
-     * @param direction
-     * @return
+     * @param blockPos the block the player is damaging
+     * @param direction the direction the player is looking at the block
+     * @return whether the player should be acknowledged to be breaking a block
      */
     public boolean onPlayerDamageBlock(BlockPos blockPos, Direction direction)
     {
-        //For some reason the static field results to null here, this fixes it
+        //For some reason the static field results to null here, so just make a local refrence one to shadow it
         PlayerController controller = minecraft.playerController;
-
+        //region null checks
         if (controller == null)
             return true;
 
+        if(minecraft.world == null)
+            return true;
+
+        if(minecraft.player == null)
+            return true;
+        //endregion
         controller.syncCurrentPlayItem();
 
         if (hasPlayerBrokenABlock)
@@ -440,132 +449,4 @@ public class MiningSpeed
         }
     }
 
-    //region unused
-    // not going to lie, I looked at and rewrote the wrong function lol, this isn't used at all
-    private boolean onPlayerDestroyBlockORIGINAL(BlockPos blockPos)
-    {
-        if (minecraft.player.getHeldItemMainhand().onBlockStartBreak(blockPos, minecraft.player))
-        {
-            return false;
-        }
-
-        if (minecraft.player.blockActionRestricted(minecraft.world, blockPos, controller.getCurrentGameType()))
-        {
-            return false;
-        }
-        else
-        {
-            World world = minecraft.world;
-            BlockState blockState = world.getBlockState(blockPos);
-
-            if (!minecraft.player.getHeldItemMainhand().getItem().canPlayerBreakBlockWhileHolding(blockState, world, blockPos, minecraft.player))
-            {
-                return false;
-            }
-            else
-            {
-                Block block = blockState.getBlock();
-
-                if (block instanceof CommandBlockBlock || block instanceof StructureBlock || block instanceof JigsawBlock && !minecraft.player.canUseCommandBlock())
-                {
-                    return false;
-                }
-                else if (blockState.isAir(world, blockPos))
-                {
-                    return false;
-                }
-                else
-                {
-                    FluidState fluidState = world.getFluidState(blockPos);
-                    boolean isBlockRemovedSuccessfully = blockState.removedByPlayer(world, blockPos, minecraft.player, false, fluidState);
-
-                    if (isBlockRemovedSuccessfully)
-                    {
-                        block.onPlayerDestroy(world, blockPos, blockState);
-                    }
-
-                    return isBlockRemovedSuccessfully;
-                }
-            }
-        }
-
-    }
-
-    public boolean clickBlockORIGINAL(BlockPos blockPos, Direction direction)
-    {
-        ClientPlayerEntity player = minecraft.player;
-        ClientWorld world = minecraft.world;
-        GameType currentGameType = controller.getCurrentGameType();
-
-        if (player == null)
-            return true;
-
-        if (world == null)
-            return true;
-
-        if (player.blockActionRestricted(world, blockPos, minecraft.playerController.getCurrentGameType()))
-        {
-            return false;
-        }
-        else if (!world.getWorldBorder().contains(blockPos))
-        {
-            return false;
-        }
-        else
-        {
-            if (currentGameType.isCreative())
-            {
-                BlockState blockState = world.getBlockState(blockPos);
-                minecraft.getTutorial().onHitBlock(world, blockPos, blockState, 1.0f);
-                controller.sendDiggingPacket(CPlayerDiggingPacket.Action.START_DESTROY_BLOCK, blockPos, direction);
-
-                if (!ForgeHooks.onLeftClickBlock(player, blockPos, direction).isCanceled())
-                {
-                    controller.onPlayerDestroyBlock(blockPos);
-                }
-            }
-            else if (!controller.isHittingBlock || !controller.isHittingPosition(blockPos))
-            {
-                if (controller.isHittingBlock)
-                {
-                    controller.sendDiggingPacket(CPlayerDiggingPacket.Action.ABORT_DESTROY_BLOCK, controller.currentBlock, direction);
-                }
-
-                PlayerInteractEvent.LeftClickBlock event = ForgeHooks.onLeftClickBlock(player, blockPos, direction);
-
-                BlockState blockState = world.getBlockState(blockPos);
-                minecraft.getTutorial().onHitBlock(world, blockPos, blockState, 0.0f);
-                controller.sendDiggingPacket(CPlayerDiggingPacket.Action.START_DESTROY_BLOCK, blockPos, direction);
-
-                boolean isBlockAir = blockState.isAir(world, blockPos);
-
-                if (!isBlockAir && controller.curBlockDamageMP == 0.0f)
-                {
-                    if (event.getUseBlock() != Event.Result.DENY)
-                    {
-                        blockState.onBlockClicked(world, blockPos, player);
-                    }
-                }
-
-                if (event.getUseItem() == Event.Result.DENY)
-                    return true;
-
-                if (!isBlockAir && blockState.getPlayerRelativeBlockHardness(player, world, blockPos) >= 1.0f)
-                {
-                    controller.onPlayerDestroyBlock(blockPos);
-                }
-                else
-                {
-                    controller.isHittingBlock = true;
-                    controller.currentBlock = blockPos;
-                    controller.currentItemHittingBlock = player.getHeldItemMainhand();
-                    controller.curBlockDamageMP = 0.0f;
-                    world.sendBlockBreakProgress(player.getEntityId(), controller.currentBlock, (int) (controller.curBlockDamageMP * 10.0f) - 1);
-                }
-            }
-
-            return true;
-        }
-    }
-    //endregion
 }
