@@ -55,23 +55,6 @@ public class Networking
             DISABLED_TEXT_COMPONENT.mergeStyle(TextFormatting.RED);
         }
 
-        /*protected CompoundNBT newNBT;
-
-        public NBTUpdateMessage(CompoundNBT newNBT)
-        {
-            this.newNBT = newNBT;
-        }
-
-        public NBTUpdateMessage(PacketBuffer buf)
-        {
-            this.newNBT = buf.readCompoundTag();
-        }
-
-        public void toBytes(PacketBuffer buf)
-        {
-            buf.writeCompoundTag(newNBT);
-        }*/
-
         public void handle(Supplier<NetworkEvent.Context> ctx)
         {
             ctx.get().enqueueWork(() ->
