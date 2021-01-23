@@ -10,11 +10,8 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ShearsItem;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.play.client.CPlayerDiggingPacket;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
@@ -35,7 +32,6 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.thread.SidedThreadGroups;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
@@ -47,18 +43,41 @@ import static thatguy.mod.miningspeed2.MiningSpeed.MINING_SPEED_CONTROL_ENABLED_
 @Mod.EventBusSubscriber(modid = MiningSpeed.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ClientSide
 {
+    public static final KeyBinding toggleSpeedControlKeybinding = new KeyBinding("Toggle Mining Speed Control", GLFW.GLFW_KEY_BACKSLASH, "Mining Control");
     private static final Logger log = LogManager.getLogger();
     private static final Minecraft minecraft = Minecraft.getInstance();
     private static final PlayerController controller = minecraft.playerController;
-
-    public static KeyBinding toggleSpeedControl = new KeyBinding("Toggle Mining Speed Control", GLFW.GLFW_KEY_BACKSLASH, "Mining Control");
     private static final Object blockBrokenLock = new Object();
+    private final static TextComponent ENABLED_TEXT_COMPONENT = new StringTextComponent("Enabled");
+    private final static TextComponent DISABLED_TEXT_COMPONENT = new StringTextComponent("Disabled");
+    private static boolean isClientSideOnlyModeEnabled = false;
+    private static boolean clientSideMode_ControlEnabled = false;
     private static boolean hasPlayerBrokenABlock = false;
 
-    public static void init()
+    static
     {
-        ClientRegistry.registerKeyBinding(toggleSpeedControl);
+        ENABLED_TEXT_COMPONENT.mergeStyle(TextFormatting.GREEN);
+        DISABLED_TEXT_COMPONENT.mergeStyle(TextFormatting.RED);
     }
+
+    public static void init(boolean isClientSideOnly)
+    {
+        isClientSideOnlyModeEnabled = isClientSideOnly;
+        ClientRegistry.registerKeyBinding(toggleSpeedControlKeybinding);
+    }
+
+    static private boolean isMiningControlEnabled(ItemStack stack)
+    {
+        if (isClientSideOnlyModeEnabled)
+        {
+            return clientSideMode_ControlEnabled;
+        }
+        else
+        {
+            return stack.getOrCreateTag().getBoolean(MINING_SPEED_CONTROL_ENABLED_TAG);
+        }
+    }
+
 
     static private boolean isItemMiningTool(ItemStack stack)
     {
@@ -85,18 +104,14 @@ public class ClientSide
     @SubscribeEvent
     static public void onRenderTooltip(ItemTooltipEvent event)
     {
-        if(event.getPlayer() == null)
-            return;
-
-        if(!event.getPlayer().world.isRemote)
+        if (event.getPlayer() == null)
             return;
 
         ItemStack stack = event.getItemStack();
-        CompoundNBT nbt = stack.getOrCreateTag();
 
         if (isItemMiningTool(stack))
         {
-            boolean isEnabled = nbt.getBoolean(MINING_SPEED_CONTROL_ENABLED_TAG);
+            boolean isEnabled = isMiningControlEnabled(stack);
             TextComponent enabled = new StringTextComponent("Enabled");
             TextComponent disabled = new StringTextComponent("Disabled");
 
@@ -126,34 +141,9 @@ public class ClientSide
         }
     }
 
-    static private void handleKeybindings()
-    {
-        if (toggleSpeedControl.isPressed())
-        {
-            ClientPlayerEntity player = minecraft.player;
-
-            if (player != null)
-            {
-                if (!player.getHeldItemMainhand().isEmpty())
-                {
-                    ItemStack stack = player.getHeldItemMainhand();
-
-                    //don't set nbt for non tool items
-                    if (!isItemMiningTool(stack))
-                        return;
-
-                    Networking.sendToServer(new Networking.ToggleMiningControlMessage());
-                }
-            }
-        }
-    }
-
     @SubscribeEvent(priority = EventPriority.LOWEST)
     static public void handleInputEvent(InputEvent.ClickInputEvent event)
     {
-        if(Thread.currentThread().getThreadGroup() == SidedThreadGroups.SERVER)
-            return;
-
         //region null checks
         if (minecraft.player == null)
             return;
@@ -161,7 +151,7 @@ public class ClientSide
         if (minecraft.player.getHeldItemMainhand().isEmpty())
             return;
 
-        if (!minecraft.player.getHeldItemMainhand().getOrCreateTag().getBoolean(MINING_SPEED_CONTROL_ENABLED_TAG))
+        if (!isMiningControlEnabled(minecraft.player.getHeldItemMainhand()))
             return;
 
         if (event.isCanceled())
@@ -177,7 +167,7 @@ public class ClientSide
         if (world == null)
             return;
 
-        if(minecraft.playerController == null)
+        if (minecraft.playerController == null)
             return;
 
         if (minecraft.playerController.getCurrentGameType().isCreative())
@@ -210,10 +200,59 @@ public class ClientSide
         event.setCanceled(true);
     }
 
+    static private void handleKeybindings()
+    {
+        if (toggleSpeedControlKeybinding.isPressed())
+        {
+            ClientPlayerEntity player = minecraft.player;
+
+            if (player != null)
+            {
+                if (!player.getHeldItemMainhand().isEmpty())
+                {
+                    ItemStack stack = player.getHeldItemMainhand();
+
+                    //don't set nbt for non tool items
+                    if (!isItemMiningTool(stack))
+                        return;
+
+                    toggleMiningSpeedControl();
+                }
+            }
+        }
+    }
+
+    static private void toggleMiningSpeedControl()
+    {
+        if (isClientSideOnlyModeEnabled)
+        {
+            toggleMiningSpeedControlClientSideOnly();
+        }
+        else
+        {
+            Networking.sendToServer(new Networking.ToggleMiningControlMessage());
+        }
+    }
+
+    static private void toggleMiningSpeedControlClientSideOnly()
+    {
+        clientSideMode_ControlEnabled = !clientSideMode_ControlEnabled;
+
+        if (minecraft.player == null)
+            return;
+
+        minecraft.player.sendMessage(
+                new StringTextComponent("Mining control is now ")
+                        .append((clientSideMode_ControlEnabled ? ENABLED_TEXT_COMPONENT : DISABLED_TEXT_COMPONENT)).mergeStyle(TextFormatting.RESET),
+                Util.DUMMY_UUID);
+
+        minecraft.player.world.playSound(minecraft.player, minecraft.player.getPosition(), SoundEvents.BLOCK_LEVER_CLICK, SoundCategory.PLAYERS, 0.4F, 1.0F - 0.1F * (clientSideMode_ControlEnabled ? 1 : 2));
+    }
+
     /**
      * Replaces PlayerController.clickBlock
      *
-     * @param blockPos the position of the block being clicked
+     * @param blockPos  the position of the block being clicked
      * @param direction the direction the player is looking at the block
      * @return Return value seems to have no effect. True if the action succeeded, false if it did not, e.g. due to restrictions.
      */
@@ -223,7 +262,7 @@ public class ClientSide
         ClientWorld world = minecraft.world;
         PlayerController controller = minecraft.playerController;
         //region null check
-        if(controller == null)
+        if (controller == null)
             return true;
         ///endregion
         GameType currentGameType = controller.getCurrentGameType();
@@ -314,10 +353,10 @@ public class ClientSide
     {
         BlockRayTraceResult objectMouseOver = (BlockRayTraceResult) minecraft.objectMouseOver;
         //region null checks
-        if(objectMouseOver == null)
+        if (objectMouseOver == null)
             return;
 
-        if(minecraft.player == null)
+        if (minecraft.player == null)
             return;
         //endregion
         BlockPos blockPos = objectMouseOver.getPos();
@@ -347,7 +386,7 @@ public class ClientSide
     /**
      * replaces PlayerController.onPlayerDamageBlock
      *
-     * @param blockPos the block the player is damaging
+     * @param blockPos  the block the player is damaging
      * @param direction the direction the player is looking at the block
      * @return whether the player should be acknowledged to be breaking a block
      */
@@ -359,10 +398,10 @@ public class ClientSide
         if (controller == null)
             return true;
 
-        if(minecraft.world == null)
+        if (minecraft.world == null)
             return true;
 
-        if(minecraft.player == null)
+        if (minecraft.player == null)
             return true;
         //endregion
         controller.syncCurrentPlayItem();
