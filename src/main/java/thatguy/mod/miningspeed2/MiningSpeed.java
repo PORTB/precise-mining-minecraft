@@ -1,11 +1,13 @@
 package thatguy.mod.miningspeed2;
 
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.network.FMLNetworkConstants;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -15,14 +17,16 @@ public class MiningSpeed
 {
     public final static String MINING_SPEED_CONTROL_ENABLED_TAG = "mining_speed_enabled";
     public final static String MODID = "miningspeed2";
-
-    private static boolean isClientSideOnlyModeEnabled = false;
-
+    
     public MiningSpeed()
     {
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.CLIENT_CONFIG);
+    }
 
-        isClientSideOnlyModeEnabled = Config.CLIENT_ONLY_MODE_ENABLED.get();
+    @SubscribeEvent
+    public void onCommonSetup(FMLCommonSetupEvent event)
+    {
+        boolean isClientSideOnlyModeEnabled = Config.CLIENT_ONLY_MODE_ENABLED.get();
 
         if (isClientSideOnlyModeEnabled)
         {
@@ -34,11 +38,6 @@ public class MiningSpeed
             Networking.register();
         }
 
-        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> MiningSpeed::initClientSide);
-    }
-
-    private static void initClientSide()
-    {
-        ClientSide.init(isClientSideOnlyModeEnabled);
+        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> ClientSide::init);
     }
 }

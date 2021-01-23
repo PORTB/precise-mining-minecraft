@@ -14,6 +14,7 @@ public class Config
         clientBuilder.comment("Client-only mode\nAllows the mod to be used on servers which don't have the mod installed\nDisables per-item control of mining control mode");
 
         CLIENT_ONLY_MODE_ENABLED = clientBuilder.define("client_only_mode", false);
+
         CLIENT_CONFIG = clientBuilder.build();
     }
 }

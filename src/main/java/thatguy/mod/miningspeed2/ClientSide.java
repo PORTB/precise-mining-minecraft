@@ -60,9 +60,9 @@ public class ClientSide
         DISABLED_TEXT_COMPONENT.mergeStyle(TextFormatting.RED);
     }
 
-    public static void init(boolean isClientSideOnly)
+    public static void init()
     {
-        isClientSideOnlyModeEnabled = isClientSideOnly;
+        isClientSideOnlyModeEnabled = Config.CLIENT_ONLY_MODE_ENABLED.get();
         ClientRegistry.registerKeyBinding(toggleSpeedControlKeybinding);
     }
 
