@@ -24,7 +24,6 @@ import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.GameType;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.ToolType;
@@ -37,7 +36,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.thread.SidedThreadGroups;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
@@ -57,7 +55,7 @@ public class ClientSide
     private static final Object blockBrokenLock = new Object();
     private static boolean hasPlayerBrokenABlock = false;
 
-    public static void init(FMLClientSetupEvent event)
+    public static void init()
     {
         ClientRegistry.registerKeyBinding(toggleSpeedControl);
     }
