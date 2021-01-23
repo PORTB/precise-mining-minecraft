@@ -13,21 +13,7 @@ public class MiningSpeed
 
     public MiningSpeed()
     {
-        //Make sure the mod being absent on the other network side does not cause the client to display the server as incompatible
         DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> ClientSide::init);
         Networking.register();
-
     }
-
-    //Function used to purposley lag the server for testing with bad tps.
-    //@SubscribeEvent
-//    void lagServer(TickEvent.ServerTickEvent event)
-//    {
-//        String s = "d";
-//        for (int i = 0; i < 4500; i++)
-//        {
-//            s += "swedwedewdew" + i + "nededed";
-//        }
-//        //System.out.println("EEEEEEEEEEEEEEE");
-//    }
 }
