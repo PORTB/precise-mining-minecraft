@@ -151,9 +151,6 @@ public class ClientSide
     @SubscribeEvent(priority = EventPriority.LOWEST)
     static public void handleInputEvent(InputEvent.ClickInputEvent event)
     {
-        if(Thread.currentThread().getThreadGroup() == SidedThreadGroups.SERVER)
-            return;
-
         //region null checks
         if (minecraft.player == null)
             return;
