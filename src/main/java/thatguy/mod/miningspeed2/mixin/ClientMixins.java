@@ -31,7 +31,7 @@ public class ClientMixins
 
                 minecraft.player.sendChatMessage("hello");
 
-                if (!minecraft.world.isAirBlock(blockpos) && minecraft.playerController.onPlayerDamageBlock(blockpos, minecraft.objectMouseOver.sideHit)// && !customPlayerController.hasBrokenBlock)
+                if (!minecraft.world.isAirBlock(blockpos) && customPlayerController.onPlayerDamageBlock(blockpos, minecraft.objectMouseOver.sideHit))
                 {
                     minecraft.effectRenderer.addBlockHitEffects(blockpos, minecraft.objectMouseOver);
                     minecraft.player.swingArm(EnumHand.MAIN_HAND);

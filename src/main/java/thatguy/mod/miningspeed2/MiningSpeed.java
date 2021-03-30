@@ -5,6 +5,7 @@ import net.minecraft.init.Blocks;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.apache.logging.log4j.Logger;
 import scala.collection.parallel.ParIterableLike;
 
@@ -31,5 +32,11 @@ public class MiningSpeed
     {
         // some example code
         logger.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
+    }
+
+    @Mod.EventHandler
+    public void clientTickEvent(TickEvent.ClientTickEvent event)
+    {
+        
     }
 }
