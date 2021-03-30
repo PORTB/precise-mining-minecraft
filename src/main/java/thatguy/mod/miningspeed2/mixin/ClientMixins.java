@@ -12,10 +12,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin({Minecraft.class})
 public class ClientMixins
 {
+    private static final Minecraft minecraft = Minecraft.getMinecraft();
+    
     @Inject(method = {"sendClickBlockToController"}, at={@At("head")}, cancellable = true)
     public void sendClickBlockToController(boolean leftClick, CallbackInfo callbackInfo)
     {
-        final Minecraft minecraft = Minecraft.getMinecraft();
 
         if (!leftClick)
         {
