@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import static thatguy.mod.miningspeed2.MiningSpeed.customPlayerController;
 import static thatguy.mod.miningspeed2.MiningSpeed.minecraft;
 
 @Mixin({Minecraft.class})
@@ -17,8 +18,6 @@ public class ClientMixins
     @Inject(method = {"sendClickBlockToController"}, at={@At("head")}, cancellable = true)
     public void sendClickBlockToController(boolean leftClick, CallbackInfo callbackInfo)
     {
-        //final Minecraft minecraft = Minecraft.getMinecraft();
-
         if (!leftClick)
         {
             minecraft.leftClickCounter = 0;
@@ -32,7 +31,7 @@ public class ClientMixins
 
                 minecraft.player.sendChatMessage("hello");
 
-                if (!minecraft.world.isAirBlock(blockpos) && minecraft.playerController.onPlayerDamageBlock(blockpos, minecraft.objectMouseOver.sideHit))
+                if (!minecraft.world.isAirBlock(blockpos) && minecraft.playerController.onPlayerDamageBlock(blockpos, minecraft.objectMouseOver.sideHit)// && !customPlayerController.hasBrokenBlock)
                 {
                     minecraft.effectRenderer.addBlockHitEffects(blockpos, minecraft.objectMouseOver);
                     minecraft.player.swingArm(EnumHand.MAIN_HAND);

@@ -15,7 +15,8 @@ public class MiningSpeed
     public static final String NAME = "Precision Mining";
     public static final String VERSION = "1.0";
 
-    public static Minecraft minecraft = Minecraft.getMinecraft();
+    public final static Minecraft minecraft = Minecraft.getMinecraft();
+    public final static CustomPlayerController customPlayerController = new CustomPlayerController();
 
     private static Logger logger;
 
