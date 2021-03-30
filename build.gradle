@@ -60,7 +60,7 @@ minecraft {
 }
 
 mixin {
-    add sourceSets.main, 'quark.mixins.refmap.json'
+    add sourceSets.main, 'miningspeed2.mixins.refmap.json'
 }
 
 dependencies {
