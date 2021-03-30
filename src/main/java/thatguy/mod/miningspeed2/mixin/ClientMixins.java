@@ -32,7 +32,7 @@ public class ClientMixins
                 BlockPos blockpos = minecraft.objectMouseOver.getBlockPos();
 
                 //minecraft.player.sendChatMessage("hello");
-                minecraft.player.sendMessage(new TextComponentString("cock"));
+                minecraft.player.sendMessage(new TextComponentString(Boolean.toString(customPlayerController.hasBrokenBlock)));
 
                 if (!minecraft.world.isAirBlock(blockpos) && customPlayerController.onPlayerDamageBlock(blockpos, minecraft.objectMouseOver.sideHit))
                 {
