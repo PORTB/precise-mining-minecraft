@@ -12,7 +12,7 @@ public class ClientMixins
     @Inject(method = {"sendClickBlockToController"}, at={@At("head")}, cancellable = true)
     public void sendClickBlockToController(boolean leftClick, CallbackInfo callbackInfo)
     {
-
+        callbackInfo.cancel();
     }
 
 }
