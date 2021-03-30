@@ -26,7 +26,7 @@ public class MiningSpeed
 
     private static Logger logger;
 
-    @Mod.Instance
+    //@Mod.Instance
     //public static MiningSpeed instance;
 
     /*@SidedProxy(clientSide = "thatguy.mod.miningspeed2.proxy.ClientProxy",
