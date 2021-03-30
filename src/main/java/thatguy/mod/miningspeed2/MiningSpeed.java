@@ -3,6 +3,7 @@ package thatguy.mod.miningspeed2;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.init.Blocks;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -25,17 +26,22 @@ public class MiningSpeed
 
     private static Logger logger;
 
-    @SidedProxy(clientSide = "thatguy.mod.miningspeed2.proxy.ClientProxy",
-            serverSide = "thatguy.mod.miningspeed2.proxy.CommonProxy",
+    @Mod.Instance
+    //public static MiningSpeed instance;
+
+    /*@SidedProxy(clientSide = "thatguy.mod.miningspeed2.proxy.ClientProxy",
+            serverSide =     "thatguy.mod.miningspeed2.proxy.CommonProxy",
             modId = MODID
     )
-    public static CommonProxy proxy;
+    public static CommonProxy proxy;*/
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-        logger = event.getModLog();
+        MinecraftForge.EVENT_BUS.register(this);
 
+        logger = event.getModLog();
+        //proxy.preInit(event);
     }
 
     @Mod.EventHandler
@@ -43,5 +49,19 @@ public class MiningSpeed
     {
         // some example code
         logger.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
+    }
+
+    @Mod.EventHandler
+    public void clientTickEvent(TickEvent.ClientTickEvent event)
+    {
+        resetHasBrokenBlockIfMouseNotPressed();
+    }
+
+    private void resetHasBrokenBlockIfMouseNotPressed()
+    {
+        if(!minecraft.gameSettings.keyBindAttack.isKeyDown())
+        {
+            customPlayerController.hasBrokenBlock = false;
+        }
     }
 }
