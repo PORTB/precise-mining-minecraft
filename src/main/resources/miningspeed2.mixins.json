@@ -1,0 +1,12 @@
+{
+  "minVersion": "0.8",
+  "required": true,
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "miningspeed2.mixins.refmap.json",
+  "package": "thatguy.mod.miningspeed2.mixin",
+  "mixins": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
