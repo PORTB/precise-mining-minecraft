@@ -4,6 +4,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -29,7 +31,8 @@ public class ClientMixins
             {
                 BlockPos blockpos = minecraft.objectMouseOver.getBlockPos();
 
-                minecraft.player.sendChatMessage("hello");
+                //minecraft.player.sendChatMessage("hello");
+                minecraft.player.sendMessage(new TextComponentString("cock"));
 
                 if (!minecraft.world.isAirBlock(blockpos) && customPlayerController.onPlayerDamageBlock(blockpos, minecraft.objectMouseOver.sideHit))
                 {
