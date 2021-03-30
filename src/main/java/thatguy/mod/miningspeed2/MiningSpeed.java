@@ -33,6 +33,7 @@ public class MiningSpeed
     public void preInit(FMLPreInitializationEvent event)
     {
         logger = event.getModLog();
+
     }
 
     @Mod.EventHandler

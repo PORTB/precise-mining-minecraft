@@ -17,12 +17,14 @@ import static thatguy.mod.miningspeed2.MiningSpeed.minecraft;
 
 public class CustomPlayerController
 {
-    private final static PlayerControllerMP playerController = Minecraft.getMinecraft().playerController;
+    private final static PlayerControllerMP playerController = minecraft.playerController;
 
     public boolean hasBrokenBlock = false;
 
     public boolean onPlayerDamageBlock(BlockPos posBlock, EnumFacing directionFacing)
     {
+        final PlayerControllerMP playerController = minecraft.playerController;
+
         playerController.syncCurrentPlayItem();
 
         if(hasBrokenBlock)

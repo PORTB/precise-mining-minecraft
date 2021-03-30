@@ -16,7 +16,7 @@ public class ClientProxy extends CommonProxy
 
     private void resetHasBrokenBlockIfMouseNotPressed()
     {
-        if(minecraft.gameSettings.keyBindAttack.isKeyDown())
+        if(!minecraft.gameSettings.keyBindAttack.isKeyDown())
         {
             customPlayerController.hasBrokenBlock = false;
         }
