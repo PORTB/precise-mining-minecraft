@@ -12,6 +12,8 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Logger;
 import scala.collection.parallel.ParIterableLike;
 
@@ -46,6 +48,7 @@ public class MiningSpeed
     }
 
     @SubscribeEvent
+    @SideOnly(Side.CLIENT)
     public void clientTickEvent(TickEvent.ClientTickEvent event)
     {
         resetHasBrokenBlockIfMouseNotPressed();
