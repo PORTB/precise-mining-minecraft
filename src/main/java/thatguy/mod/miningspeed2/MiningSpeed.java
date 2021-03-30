@@ -3,11 +3,13 @@ package thatguy.mod.miningspeed2;
 import net.minecraft.client.Minecraft;
 import net.minecraft.init.Blocks;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.apache.logging.log4j.Logger;
 import scala.collection.parallel.ParIterableLike;
+import thatguy.mod.miningspeed2.proxy.CommonProxy;
 
 @Mod(modid = MiningSpeed.MODID, name = MiningSpeed.NAME, version = MiningSpeed.VERSION)
 public class MiningSpeed
@@ -21,6 +23,12 @@ public class MiningSpeed
 
     private static Logger logger;
 
+    @SidedProxy(clientSide = "thatguy.mod.miningspeed2.proxy.ClientProxy",
+            serverSide = "thatguy.mod.miningspeed2.proxy.CommonProxy",
+            modId = MODID
+    )
+    public static CommonProxy proxy;
+
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
@@ -32,11 +40,5 @@ public class MiningSpeed
     {
         // some example code
         logger.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
-    }
-
-    @Mod.EventHandler
-    public void clientTickEvent(TickEvent.ClientTickEvent event)
-    {
-        
     }
 }
