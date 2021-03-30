@@ -9,13 +9,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import static thatguy.mod.miningspeed2.MiningSpeed.minecraft;
+
 @Mixin({Minecraft.class})
 public class ClientMixins
 {
     @Inject(method = {"sendClickBlockToController"}, at={@At("head")}, cancellable = true)
     public void sendClickBlockToController(boolean leftClick, CallbackInfo callbackInfo)
     {
-        final Minecraft minecraft = Minecraft.getMinecraft();
+        //final Minecraft minecraft = Minecraft.getMinecraft();
 
         if (!leftClick)
         {
