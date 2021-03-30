@@ -1,6 +1,7 @@
 package thatguy.mod.miningspeed2;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.init.Blocks;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -19,6 +20,7 @@ public class MiningSpeed
     public static final String VERSION = "1.0";
 
     public final static Minecraft minecraft = Minecraft.getMinecraft();
+    public final static PlayerControllerMP playerController = minecraft.playerController;
     public final static CustomPlayerController customPlayerController = new CustomPlayerController();
 
     private static Logger logger;

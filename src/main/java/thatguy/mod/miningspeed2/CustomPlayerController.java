@@ -17,7 +17,9 @@ import static thatguy.mod.miningspeed2.MiningSpeed.minecraft;
 
 public class CustomPlayerController
 {
-    private final static PlayerControllerMP playerController = minecraft.playerController;
+    //causes NPE somehow
+    //using a local variable works fine though for some reason
+    //private final static PlayerControllerMP playerController = minecraft.playerController;
 
     public boolean hasBrokenBlock = false;
 
