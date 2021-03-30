@@ -26,7 +26,9 @@ public class MiningSpeed
     public final static PlayerControllerMP playerController = minecraft.playerController;
     public final static CustomPlayerController customPlayerController = new CustomPlayerController();
 
-    private static Logger logger;
+    public static Logger logger;
+    public static boolean hasBrokenBlock = false;
+
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
@@ -53,7 +55,7 @@ public class MiningSpeed
     {
         if(!minecraft.gameSettings.keyBindAttack.isKeyDown())
         {
-            customPlayerController.hasBrokenBlock = false;
+            MiningSpeed.hasBrokenBlock = false;
         }
     }
 }

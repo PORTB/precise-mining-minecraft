@@ -17,6 +17,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.GameType;
 import net.minecraftforge.event.world.NoteBlockEvent;
 
+import static thatguy.mod.miningspeed2.MiningSpeed.hasBrokenBlock;
 import static thatguy.mod.miningspeed2.MiningSpeed.minecraft;
 
 public class CustomPlayerController
@@ -25,7 +26,6 @@ public class CustomPlayerController
     //using a local variable works fine though for some reason
     //private final static PlayerControllerMP playerController = minecraft.playerController;
 
-    public boolean hasBrokenBlock = false;
 
     public boolean onPlayerDamageBlock(BlockPos posBlock, EnumFacing directionFacing)
     {
@@ -134,12 +134,16 @@ public class CustomPlayerController
                     PlayerControllerMP.clickBlockCreative(playerController.mc, playerController, loc, face);
                 playerController.blockHitDelay = 5;
             }
-            else if (!playerController.isHittingBlock || !playerController.isHittingPosition(loc) && !hasBrokenBlock)
+            else if (!playerController.isHittingBlock || !playerController.isHittingPosition(loc))
             {
                 if (playerController.isHittingBlock)
                 {
                     playerController.connection.sendPacket(new CPacketPlayerDigging(CPacketPlayerDigging.Action.ABORT_DESTROY_BLOCK, playerController.currentBlock, face));
                 }
+
+                if(hasBrokenBlock)
+                    return false;
+
                 net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock event = net.minecraftforge.common.ForgeHooks.onLeftClickBlock(playerController.mc.player, loc, face, net.minecraftforge.common.ForgeHooks.rayTraceEyeHitVec(playerController.mc.player, playerController.getBlockReachDistance() + 1));
 
                 IBlockState iblockstate = playerController.mc.world.getBlockState(loc);
@@ -156,9 +160,8 @@ public class CustomPlayerController
                 if (event.getUseItem() == net.minecraftforge.fml.common.eventhandler.Event.Result.DENY) return true;
                 if (flag && iblockstate.getPlayerRelativeBlockHardness(playerController.mc.player, playerController.mc.player.world, loc) >= 1.0F)
                 {
-                    playerController.onPlayerDestroyBlock(loc);
                     hasBrokenBlock = true;
-                    minecraft.player.sendMessage(new TextComponentString("hoc!!!"));
+                    playerController.onPlayerDestroyBlock(loc);
                 }
                 else
                 {

@@ -9,6 +9,8 @@ import net.minecraft.util.text.TextComponentString;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.InjectionPoint;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import static thatguy.mod.miningspeed2.MiningSpeed.customPlayerController;
@@ -17,8 +19,9 @@ import static thatguy.mod.miningspeed2.MiningSpeed.minecraft;
 @Mixin({Minecraft.class})
 public class ClientMixins
 {
-    @Inject(method = {"sendClickBlockToController"}, at={@At("head")}, cancellable = true)
-    public void sendClickBlockToController(boolean leftClick, CallbackInfo callbackInfo)
+    //@Inject(method = {"sendClickBlockToController"}, at={@At("invoke")}, cancellable = true)
+    @Redirect(method = {"sendClickBlockToController"}, at = @At("INVOKE"))
+    public void sendClickBlockToController(boolean leftClick)
     {
         if (!leftClick)
         {
@@ -31,8 +34,7 @@ public class ClientMixins
             {
                 BlockPos blockpos = minecraft.objectMouseOver.getBlockPos();
 
-                //minecraft.player.sendChatMessage("hello");
-                minecraft.player.sendMessage(new TextComponentString(Boolean.toString(customPlayerController.hasBrokenBlock)));
+                //minecraft.player.sendMessage(new TextComponentString("hello" + System.nanoTime() % 10000));
 
                 if (!minecraft.world.isAirBlock(blockpos) && customPlayerController.onPlayerDamageBlock(blockpos, minecraft.objectMouseOver.sideHit))
                 {
@@ -45,8 +47,5 @@ public class ClientMixins
                 minecraft.playerController.resetBlockRemoving();
             }
         }
-
-        callbackInfo.cancel();
     }
-
 }
