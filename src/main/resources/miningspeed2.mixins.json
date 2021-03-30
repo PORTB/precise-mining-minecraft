@@ -5,7 +5,7 @@
   "refmap": "miningspeed2.mixins.refmap.json",
   "package": "thatguy.mod.miningspeed2.mixin",
   "mixins": [
-    "ClientMixins"
+    "SendClickBlockToControllerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -15,15 +15,22 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.InjectionPoint;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import scala.collection.parallel.ParIterableLike;
 import thatguy.mod.miningspeed2.CustomPlayerController;
 
 import static thatguy.mod.miningspeed2.MiningSpeed.customPlayerController;
 import static thatguy.mod.miningspeed2.MiningSpeed.minecraft;
 
 @Mixin({Minecraft.class})
-public class ClientMixins
+public class SendClickBlockToControllerMixin
 {
-    //@Inject(method = {"sendClickBlockToController"}, at={@At("invoke")}, cancellable = true)
+
+    @Redirect(method = "processKeyBinds", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;clickMouse()V"))
+    public void clickMouse(Minecraft minecraft)
+    {
+        minecraft.player.sendMessage(new TextComponentString("ckcok and bakkl"));
+    }
+
     @Redirect(method = "processKeyBinds", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;sendClickBlockToController(Z)V"))
     public void sendClickBlockToController(Minecraft minecraft, boolean leftClick)
     {
@@ -53,9 +60,5 @@ public class ClientMixins
         }
     }
 
-    @Redirect(method = "clickMouse", at=@At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/PlayerControllerMP;clickBlock(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/EnumFacing;)V"))
-    public void clickBlock(PlayerControllerMP controller, BlockPos location, EnumFacing facing)
-    {
-        customPlayerController.clickBlock(location, facing);
-    }
+
 }
