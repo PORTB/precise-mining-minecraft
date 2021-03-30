@@ -13,7 +13,7 @@ import static thatguy.mod.miningspeed2.MiningSpeed.minecraft;
 @Mod.EventBusSubscriber(Side.CLIENT)
 public class ClientProxy extends CommonProxy
 {
-    @Mod.EventHandler
+    @SubscribeEvent
     public void clientTickEvent(TickEvent.ClientTickEvent event)
     {
         resetHasBrokenBlockIfMouseNotPressed();
