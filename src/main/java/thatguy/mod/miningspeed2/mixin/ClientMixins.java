@@ -9,15 +9,14 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import static thatguy.mod.miningspeed2.mixin.Testing.minecraft;
+
 @Mixin({Minecraft.class})
 public class ClientMixins
 {
-    private static final Minecraft minecraft = Minecraft.getMinecraft();
-    
     @Inject(method = {"sendClickBlockToController"}, at={@At("head")}, cancellable = true)
     public void sendClickBlockToController(boolean leftClick, CallbackInfo callbackInfo)
     {
-
         if (!leftClick)
         {
             minecraft.leftClickCounter = 0;
