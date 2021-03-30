@@ -14,7 +14,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.apache.logging.log4j.Logger;
 import scala.collection.parallel.ParIterableLike;
-import thatguy.mod.miningspeed2.proxy.CommonProxy;
 
 @Mod(modid = MiningSpeed.MODID, name = MiningSpeed.NAME, version = MiningSpeed.VERSION)
 public class MiningSpeed
@@ -29,22 +28,12 @@ public class MiningSpeed
 
     private static Logger logger;
 
-    @Mod.Instance(MODID)
-    public static MiningSpeed instance;
-
-    @SidedProxy(clientSide = "thatguy.mod.miningspeed2.proxy.ClientProxy",
-            serverSide =     "thatguy.mod.miningspeed2.proxy.CommonProxy",
-            modId = MODID
-    )
-    public static CommonProxy proxy;
-
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
         MinecraftForge.EVENT_BUS.register(this);
 
         logger = event.getModLog();
-        proxy.preInit(event);
     }
 
     @Mod.EventHandler
@@ -54,11 +43,9 @@ public class MiningSpeed
         logger.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
     }
 
-    /*@SubscribeEvent
+    @SubscribeEvent
     public void clientTickEvent(TickEvent.ClientTickEvent event)
     {
-        //minecraft.player.sendMessage(new TextComponentString("s" + System.nanoTime() % 10000));
-        System.out.println("cic");
         resetHasBrokenBlockIfMouseNotPressed();
     }
 
@@ -68,5 +55,5 @@ public class MiningSpeed
         {
             customPlayerController.hasBrokenBlock = false;
         }
-    }*/
+    }
 }
