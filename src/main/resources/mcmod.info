@@ -3,7 +3,7 @@
   "modid": "miningspeed2",
   "name": "Precision Mining",
   "description": "Prevents overmining by allowing you to mine precisely 1 block at a time.",
-  "version": "1.4",
+  "version": "1.5",
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",
