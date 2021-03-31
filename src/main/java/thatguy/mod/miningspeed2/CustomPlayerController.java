@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.client.CPacketPlayerDigging;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
@@ -17,8 +18,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.GameType;
 import net.minecraftforge.event.world.NoteBlockEvent;
 
-import static thatguy.mod.miningspeed2.MiningSpeed.hasBrokenBlock;
-import static thatguy.mod.miningspeed2.MiningSpeed.minecraft;
+import static thatguy.mod.miningspeed2.MiningSpeed.*;
 
 public class CustomPlayerController
 {
@@ -29,7 +29,27 @@ public class CustomPlayerController
 
     private boolean isMiningControlEnabled()
     {
-        return true;
+        if(!isItemMiningTool(minecraft.player.getHeldItemMainhand()))
+            return false;
+
+        ItemStack heldItem = minecraft.player.getHeldItemMainhand();
+
+        if(heldItem.hasTagCompound())
+        {
+            NBTTagCompound tag = heldItem.getTagCompound();
+            if(tag.hasKey(Reference.MINING_CONTROL_ENABLED_TAG))
+            {
+                return tag.getBoolean(Reference.MINING_CONTROL_ENABLED_TAG);
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else
+        {
+            return false;
+        }
     }
 
     public boolean onPlayerDamageBlock(BlockPos posBlock, EnumFacing directionFacing)
