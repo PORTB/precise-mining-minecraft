@@ -6,7 +6,11 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemShears;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -55,6 +59,27 @@ public class MiningSpeed
     {
         resetHasBrokenBlockIfMouseNotPressed();
         handleModeToggleKey();
+    }
+
+    @SubscribeEvent
+    @SideOnly(Side.CLIENT)
+    public void onShowItemTooltip(ItemTooltipEvent event)
+    {
+        ItemStack stack = event.getItemStack();
+        NBTTagCompound tag = stack.getTagCompound();
+
+        if(isItemMiningTool(stack) && tag != null)
+        {
+            boolean isEnabled = tag.getBoolean(Reference.MINING_CONTROL_ENABLED_TAG);
+
+            TextComponentString enabled = new TextComponentString("Enabled");
+            TextComponentString disabled = new TextComponentString("Disabled");
+
+            enabled.getStyle().setColor(TextFormatting.GREEN);
+            disabled.getStyle().setColor(TextFormatting.RED);
+
+            event.getToolTip().add(new TextComponentString("Mining control is ").appendSibling(isEnabled ? enabled : disabled).getFormattedText());
+        }
     }
 
     private void resetHasBrokenBlockIfMouseNotPressed()
