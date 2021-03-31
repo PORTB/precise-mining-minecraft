@@ -13,8 +13,10 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.event.FMLConstructionEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
@@ -22,12 +24,13 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Logger;
+import org.spongepowered.asm.launch.MixinBootstrap;
+import org.spongepowered.asm.mixin.Mixins;
 
 @Mod(modid = Reference.MOD_ID, name = Reference.NAME, version = Reference.VERSION)
 public class MiningSpeed
 {
     public final static Minecraft minecraft = Minecraft.getMinecraft();
-    public final static PlayerControllerMP playerController = minecraft.playerController;
     public final static CustomPlayerController customPlayerController = new CustomPlayerController();
 
     public static Logger logger;
@@ -45,12 +48,18 @@ public class MiningSpeed
         MinecraftForge.EVENT_BUS.register(this);
 
         logger = event.getModLog();
+
     }
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event)
     {
         ClientRegistry.registerKeyBinding(Reference.toggleSpeedControlKey);
+    }
+
+    @Mod.EventHandler
+    public void construct(FMLServerAboutToStartEvent event)
+    {
     }
 
     @SubscribeEvent
