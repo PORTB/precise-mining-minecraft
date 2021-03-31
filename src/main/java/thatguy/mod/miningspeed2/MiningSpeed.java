@@ -68,9 +68,9 @@ public class MiningSpeed
         ItemStack stack = event.getItemStack();
         NBTTagCompound tag = stack.getTagCompound();
 
-        if(isItemMiningTool(stack) && tag != null)
+        if(isItemMiningTool(stack))
         {
-            boolean isEnabled = tag.getBoolean(Reference.MINING_CONTROL_ENABLED_TAG);
+            boolean isEnabled = tag != null && tag.getBoolean(Reference.MINING_CONTROL_ENABLED_TAG);
 
             TextComponentString enabled = new TextComponentString("Enabled");
             TextComponentString disabled = new TextComponentString("Disabled");
