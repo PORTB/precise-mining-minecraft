@@ -25,7 +25,12 @@ public class CustomPlayerController
     //causes NPE somehow
     //using a local variable works fine though for some reason
     //private final static PlayerControllerMP playerController = minecraft.playerController;
+    private static boolean _isMiningControlEnabled = false;
 
+    private boolean isMiningControlEnabled()
+    {
+        return true;
+    }
 
     public boolean onPlayerDamageBlock(BlockPos posBlock, EnumFacing directionFacing)
     {
@@ -33,7 +38,7 @@ public class CustomPlayerController
 
         playerController.syncCurrentPlayItem();
 
-        if(hasBrokenBlock)
+        if(hasBrokenBlock && isMiningControlEnabled())
             return false;
 
         if (playerController.blockHitDelay > 0)
@@ -141,7 +146,7 @@ public class CustomPlayerController
                     playerController.connection.sendPacket(new CPacketPlayerDigging(CPacketPlayerDigging.Action.ABORT_DESTROY_BLOCK, playerController.currentBlock, face));
                 }
 
-                if(hasBrokenBlock)
+                if(hasBrokenBlock && isMiningControlEnabled())
                     return false;
 
                 net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock event = net.minecraftforge.common.ForgeHooks.onLeftClickBlock(playerController.mc.player, loc, face, net.minecraftforge.common.ForgeHooks.rayTraceEyeHitVec(playerController.mc.player, playerController.getBlockReachDistance() + 1));
