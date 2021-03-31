@@ -55,11 +55,11 @@ public class PacketModeToggle implements IMessage
 
             NBTTagCompound tag = item.getTagCompound();
 
-            if(!tag.hasKey(Reference.MINING_CONTROL_ENABLED_TAG))
+            /*if(!tag.hasKey(Reference.MINING_CONTROL_ENABLED_TAG))
             {
                 tag.setBoolean(Reference.MINING_CONTROL_ENABLED_TAG, sendPlayerStatusMessage(player, true));
                 return null;
-            }
+            }*/
 
             tag.setBoolean(Reference.MINING_CONTROL_ENABLED_TAG, sendPlayerStatusMessage(player, !tag.getBoolean(Reference.MINING_CONTROL_ENABLED_TAG)));
 
