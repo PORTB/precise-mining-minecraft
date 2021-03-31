@@ -1,5 +1,6 @@
-package thatguy.mod.miningspeed2.mixin;
+package thatguy.mod.miningspeed2.mixin.client;
 
+import jdk.nashorn.internal.codegen.CompilerConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.network.NetHandlerPlayServer;
@@ -23,8 +24,8 @@ import thatguy.mod.miningspeed2.CustomPlayerController;
 import static thatguy.mod.miningspeed2.MiningSpeed.customPlayerController;
 import static thatguy.mod.miningspeed2.MiningSpeed.minecraft;
 
-@Mixin({Minecraft.class})
-public class SendClickBlockToControllerMixin
+@Mixin(Minecraft.class)
+public class ClickMouseMixin
 {
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -73,31 +74,5 @@ public class SendClickBlockToControllerMixin
         }
     }
 
-    @Redirect(method = "processKeyBinds", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;sendClickBlockToController(Z)V"))
-    public void sendClickBlockToController(Minecraft minecraft, boolean leftClick)
-    {
-        if (!leftClick)
-        {
-            minecraft.leftClickCounter = 0;
-        }
 
-        if (minecraft.leftClickCounter <= 0 && !minecraft.player.isHandActive())
-        {
-            if (leftClick && minecraft.objectMouseOver != null && minecraft.objectMouseOver.typeOfHit == RayTraceResult.Type.BLOCK)
-            {
-                BlockPos blockpos = minecraft.objectMouseOver.getBlockPos();
-
-                //minecraft.player.sendMessage(new TextComponentString("hello" + System.nanoTime() % 10000));
-
-                if (!minecraft.world.isAirBlock(blockpos) && customPlayerController.onPlayerDamageBlock(blockpos, minecraft.objectMouseOver.sideHit))
-                {
-                    minecraft.effectRenderer.addBlockHitEffects(blockpos, minecraft.objectMouseOver);
-                    minecraft.player.swingArm(EnumHand.MAIN_HAND);
-                }
-            } else
-            {
-                minecraft.playerController.resetBlockRemoving();
-            }
-        }
-    }
 }

@@ -4,8 +4,10 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "miningspeed2.mixins.refmap.json",
   "package": "thatguy.mod.miningspeed2.mixin",
-  "mixins": [
-    "SendClickBlockToControllerMixin"
+  "mixins": [],
+  "client": [
+    "client.ClickMouseMixin",
+    "client.OnPlayerDamageBlockMixin"
   ],
   "injectors": {
     "defaultRequire": 1

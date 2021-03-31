@@ -7,6 +7,7 @@ import org.spongepowered.asm.mixin.Mixins;
 import javax.annotation.Nullable;
 import java.util.Map;
 
+@IFMLLoadingPlugin.MCVersion("1.12.2")
 public class MixinLoader implements IFMLLoadingPlugin
 {
     public MixinLoader()
