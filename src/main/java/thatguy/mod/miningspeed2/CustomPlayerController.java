@@ -18,6 +18,8 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.GameType;
 import net.minecraftforge.event.world.NoteBlockEvent;
 
+import javax.annotation.Nonnull;
+
 import static thatguy.mod.miningspeed2.MiningSpeed.*;
 
 public class CustomPlayerController
@@ -34,9 +36,10 @@ public class CustomPlayerController
 
         ItemStack heldItem = minecraft.player.getHeldItemMainhand();
 
-        if(heldItem.hasTagCompound())
+        if(heldItem.getTagCompound() != null)
         {
             NBTTagCompound tag = heldItem.getTagCompound();
+
             if(tag.hasKey(Reference.MINING_CONTROL_ENABLED_TAG))
             {
                 return tag.getBoolean(Reference.MINING_CONTROL_ENABLED_TAG);

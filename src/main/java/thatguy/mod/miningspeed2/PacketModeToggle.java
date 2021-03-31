@@ -61,7 +61,7 @@ public class PacketModeToggle implements IMessage
                 return null;
             }
 
-            tag.setBoolean(Reference.MINING_CONTROL_ENABLED_TAG, sendPlayerStatusMessage(player, tag.getBoolean(Reference.MINING_CONTROL_ENABLED_TAG)));
+            tag.setBoolean(Reference.MINING_CONTROL_ENABLED_TAG, sendPlayerStatusMessage(player, !tag.getBoolean(Reference.MINING_CONTROL_ENABLED_TAG)));
 
             return null;
         }
@@ -69,7 +69,7 @@ public class PacketModeToggle implements IMessage
         private boolean sendPlayerStatusMessage(EntityPlayerMP player, boolean enabled)
         {
             player.sendMessage(new TextComponentString("Mining control is now ").appendSibling(
-                    (enabled ? ENABLED_TEXT_COMPONENT : DISABLED_TEXT_COMPONENT).appendSibling(new TextComponentString(" for this tool"))));
+                    (enabled ? ENABLED_TEXT_COMPONENT : DISABLED_TEXT_COMPONENT)).appendSibling(new TextComponentString(" for this tool")));
 
             player.world.playSound(null, player.getPosition(), SoundEvents.BLOCK_LEVER_CLICK, SoundCategory.PLAYERS, 0.4F, 1.0F - 0.1F * (enabled ? 1 : 2));
 

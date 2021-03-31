@@ -6,7 +6,10 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemShears;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -35,9 +38,15 @@ public class MiningSpeed
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-//        MinecraftForge.EVENT_BUS.register(this);
+        MinecraftForge.EVENT_BUS.register(this);
 
         logger = event.getModLog();
+    }
+
+    @Mod.EventHandler
+    public void init(FMLInitializationEvent event)
+    {
+        ClientRegistry.registerKeyBinding(Reference.toggleSpeedControlKey);
     }
 
     @SubscribeEvent
