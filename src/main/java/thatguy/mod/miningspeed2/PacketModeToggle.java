@@ -7,14 +7,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-
-import javax.swing.text.StyleConstants;
 
 public class PacketModeToggle implements IMessage
 {
@@ -48,7 +45,7 @@ public class PacketModeToggle implements IMessage
             EntityPlayerMP player = ctx.getServerHandler().player;
             ItemStack item = player.getHeldItemMainhand();
 
-            if(!item.hasTagCompound())
+            if (!item.hasTagCompound())
             {
                 item.setTagCompound(new NBTTagCompound());
             }

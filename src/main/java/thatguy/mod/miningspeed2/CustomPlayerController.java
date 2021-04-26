@@ -4,7 +4,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.item.ItemStack;
@@ -14,11 +13,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.GameType;
-import net.minecraftforge.event.world.NoteBlockEvent;
-
-import javax.annotation.Nonnull;
 
 import static thatguy.mod.miningspeed2.MiningSpeed.*;
 
@@ -27,20 +22,20 @@ public class CustomPlayerController
     //causes NPE somehow
     //using a local variable works fine though for some reason
     //private final static PlayerControllerMP playerController = minecraft.playerController;
-    private static boolean _isMiningControlEnabled = false;
+    private static final boolean _isMiningControlEnabled = false;
 
     private boolean isMiningControlEnabled()
     {
-        if(!isItemMiningTool(minecraft.player.getHeldItemMainhand()))
+        if (!isItemMiningTool(minecraft.player.getHeldItemMainhand()))
             return false;
 
         ItemStack heldItem = minecraft.player.getHeldItemMainhand();
 
-        if(heldItem.getTagCompound() != null)
+        if (heldItem.getTagCompound() != null)
         {
             NBTTagCompound tag = heldItem.getTagCompound();
 
-            if(tag.hasKey(Reference.MINING_CONTROL_ENABLED_TAG))
+            if (tag.hasKey(Reference.MINING_CONTROL_ENABLED_TAG))
             {
                 return tag.getBoolean(Reference.MINING_CONTROL_ENABLED_TAG);
             }
@@ -61,7 +56,7 @@ public class CustomPlayerController
 
         playerController.syncCurrentPlayItem();
 
-        if(hasBrokenBlock && isMiningControlEnabled())
+        if (hasBrokenBlock && isMiningControlEnabled())
             return false;
 
         if (playerController.blockHitDelay > 0)
@@ -111,7 +106,7 @@ public class CustomPlayerController
                     playerController.blockHitDelay = 5;
                 }
 
-                playerController.mc.world.sendBlockBreakProgress(playerController.mc.player.getEntityId(), playerController.currentBlock, (int)(playerController.curBlockDamageMP * 10.0F) - 1);
+                playerController.mc.world.sendBlockBreakProgress(playerController.mc.player.getEntityId(), playerController.currentBlock, (int) (playerController.curBlockDamageMP * 10.0F) - 1);
                 return true;
             }
         }
@@ -169,7 +164,7 @@ public class CustomPlayerController
                     playerController.connection.sendPacket(new CPacketPlayerDigging(CPacketPlayerDigging.Action.ABORT_DESTROY_BLOCK, playerController.currentBlock, face));
                 }
 
-                if(hasBrokenBlock && isMiningControlEnabled())
+                if (hasBrokenBlock && isMiningControlEnabled())
                     return false;
 
                 net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock event = net.minecraftforge.common.ForgeHooks.onLeftClickBlock(playerController.mc.player, loc, face, net.minecraftforge.common.ForgeHooks.rayTraceEyeHitVec(playerController.mc.player, playerController.getBlockReachDistance() + 1));
@@ -198,7 +193,7 @@ public class CustomPlayerController
                     playerController.currentItemHittingBlock = playerController.mc.player.getHeldItemMainhand();
                     playerController.curBlockDamageMP = 0.0F;
                     playerController.stepSoundTickCounter = 0.0F;
-                    playerController.mc.world.sendBlockBreakProgress(playerController.mc.player.getEntityId(), playerController.currentBlock, (int)(playerController.curBlockDamageMP * 10.0F) - 1);
+                    playerController.mc.world.sendBlockBreakProgress(playerController.mc.player.getEntityId(), playerController.currentBlock, (int) (playerController.curBlockDamageMP * 10.0F) - 1);
                 }
             }
 
