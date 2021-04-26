@@ -52,7 +52,6 @@ public class ClientSide
     private static final PlayerController controller = minecraft.playerController;
 
     public static KeyBinding toggleSpeedControl = new KeyBinding("Toggle Mining Speed Control", GLFW.GLFW_KEY_BACKSLASH, "Mining Control");
-    private static final Object blockBrokenLock = new Object();
     private static boolean hasPlayerBrokenABlock = false;
 
     public static void init()
@@ -119,10 +118,7 @@ public class ClientSide
     {
         if (!minecraft.gameSettings.keyBindAttack.isKeyDown())
         {
-            synchronized (blockBrokenLock)
-            {
-                hasPlayerBrokenABlock = false;
-            }
+            hasPlayerBrokenABlock = false;
         }
     }
 
