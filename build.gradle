@@ -169,3 +169,11 @@ publishing {
         }
     }
 }
+
+//region fixes intellij not using mod resources for runClient
+sourceSets {
+    main {
+        output.resourcesDir = output.classesDir
+    }
+}
+//endregion
