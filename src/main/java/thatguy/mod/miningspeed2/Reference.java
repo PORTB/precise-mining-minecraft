@@ -1,7 +1,5 @@
 package thatguy.mod.miningspeed2;
 
-import net.minecraft.client.settings.KeyBinding;
-
 public class Reference
 {
     public static final String MOD_ID = "miningspeed2";

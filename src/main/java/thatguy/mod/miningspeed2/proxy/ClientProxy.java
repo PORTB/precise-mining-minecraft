@@ -15,10 +15,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import thatguy.mod.miningspeed2.*;
-
-import java.sql.Ref;
 
 @Mod.EventBusSubscriber(value = Side.CLIENT, modid = Reference.MOD_ID)
 public class ClientProxy extends CommonProxy
@@ -26,13 +23,6 @@ public class ClientProxy extends CommonProxy
     public static final KeyBinding TOGGLE_SPEED_CONTROL_KEY = new KeyBinding("Toggle Mining Speed Control", 43 /*backslash*/, "Mining Control");
     public final static Minecraft MINECRAFT = Minecraft.getMinecraft();
     public final static CustomPlayerController CUSTOM_PLAYER_CONTROLLER = new CustomPlayerController();
-
-    @Mod.EventHandler
-    @Override
-    public void init(FMLInitializationEvent event)
-    {
-        ClientRegistry.registerKeyBinding(TOGGLE_SPEED_CONTROL_KEY);
-    }
 
     @SubscribeEvent
     static public void clientTickEvent(TickEvent.ClientTickEvent event)
@@ -93,5 +83,12 @@ public class ClientProxy extends CommonProxy
         }
 
         return !stack.getItem().getToolClasses(stack).isEmpty();
+    }
+
+    @Mod.EventHandler
+    @Override
+    public void init(FMLInitializationEvent event)
+    {
+        ClientRegistry.registerKeyBinding(TOGGLE_SPEED_CONTROL_KEY);
     }
 }

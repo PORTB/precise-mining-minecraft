@@ -1,6 +1,7 @@
 package thatguy.mod.miningspeed2;
 
 import net.minecraft.launchwrapper.Launch;
+
 import java.util.Map;
 
 public class EnvironmentInfo
