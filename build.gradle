@@ -27,7 +27,7 @@ apply plugin: 'eclipse'
 apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'maven-publish'
 
-version = '1.6'
+version = '1.7'
 group = 'thatguy.mod.miningspeed2' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'miningspeed2'
 
