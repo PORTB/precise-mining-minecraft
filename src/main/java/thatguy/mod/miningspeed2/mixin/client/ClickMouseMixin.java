@@ -8,8 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-
-import static thatguy.mod.miningspeed2.MiningSpeed.customPlayerController;
+import thatguy.mod.miningspeed2.proxy.ClientProxy;
 
 @Mixin(Minecraft.class)
 public class ClickMouseMixin
@@ -42,7 +41,7 @@ public class ClickMouseMixin
 
                         if (!minecraft.world.isAirBlock(blockpos))
                         {
-                            customPlayerController.clickBlock(blockpos, minecraft.objectMouseOver.sideHit);
+                            ClientProxy.CUSTOM_PLAYER_CONTROLLER.clickBlock(blockpos, minecraft.objectMouseOver.sideHit);
                             break;
                         }
 

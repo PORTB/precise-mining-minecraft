@@ -7,8 +7,7 @@ import net.minecraft.util.math.BlockPos;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-
-import static thatguy.mod.miningspeed2.MiningSpeed.customPlayerController;
+import thatguy.mod.miningspeed2.proxy.ClientProxy;
 
 @Mixin(Minecraft.class)
 public class OnPlayerDamageBlockMixin
@@ -16,6 +15,6 @@ public class OnPlayerDamageBlockMixin
     @Redirect(method = "sendClickBlockToController", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/PlayerControllerMP;onPlayerDamageBlock(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/EnumFacing;)Z"))
     private boolean onPlayerDamageBlock(PlayerControllerMP playerController, BlockPos blockPos, EnumFacing sideHit)
     {
-        return customPlayerController.onPlayerDamageBlock(blockPos, sideHit);
+        return ClientProxy.CUSTOM_PLAYER_CONTROLLER.onPlayerDamageBlock(blockPos, sideHit);
     }
 }

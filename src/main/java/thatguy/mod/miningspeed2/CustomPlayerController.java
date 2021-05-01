@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.item.ItemStack;
@@ -14,19 +15,16 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.GameType;
-
-import static thatguy.mod.miningspeed2.MiningSpeed.*;
+import thatguy.mod.miningspeed2.proxy.ClientProxy;
 
 public class CustomPlayerController
 {
-    //causes NPE somehow
-    //using a local variable works fine though for some reason
-    //private final static PlayerControllerMP playerController = minecraft.playerController;
-    private static final boolean _isMiningControlEnabled = false;
+    private final static Minecraft minecraft = Minecraft.getMinecraft();
+    public static boolean hasBrokenBlock = false;
 
     private boolean isMiningControlEnabled()
     {
-        if (!isItemMiningTool(minecraft.player.getHeldItemMainhand()))
+        if (!ClientProxy.isItemMiningTool(minecraft.player.getHeldItemMainhand()))
             return false;
 
         ItemStack heldItem = minecraft.player.getHeldItemMainhand();
