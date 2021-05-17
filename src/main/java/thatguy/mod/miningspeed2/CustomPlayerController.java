@@ -127,14 +127,14 @@ public class CustomPlayerController
 
             if (!playerController.mc.player.isAllowEdit())
             {
-                ItemStack itemstack = playerController.mc.player.getHeldItemMainhand();
+                ItemStack heldItem = playerController.mc.player.getHeldItemMainhand();
 
-                if (itemstack.isEmpty())
+                if (heldItem.isEmpty())
                 {
                     return false;
                 }
 
-                if (!itemstack.canDestroy(playerController.mc.world.getBlockState(loc).getBlock()))
+                if (!heldItem.canDestroy(playerController.mc.world.getBlockState(loc).getBlock()))
                 {
                     return false;
                 }
