@@ -72,26 +72,26 @@ public class CustomPlayerController
         }
         else if (playerController.isHittingPosition(posBlock))
         {
-            IBlockState iblockstate = playerController.mc.world.getBlockState(posBlock);
-            Block block = iblockstate.getBlock();
+            IBlockState blockState = playerController.mc.world.getBlockState(posBlock);
+            Block block = blockState.getBlock();
 
-            if (iblockstate.getMaterial() == Material.AIR)
+            if (blockState.getMaterial() == Material.AIR)
             {
                 playerController.isHittingBlock = false;
                 return false;
             }
             else
             {
-                playerController.curBlockDamageMP += iblockstate.getPlayerRelativeBlockHardness(playerController.mc.player, playerController.mc.player.world, posBlock);
+                playerController.curBlockDamageMP += blockState.getPlayerRelativeBlockHardness(playerController.mc.player, playerController.mc.player.world, posBlock);
 
                 if (playerController.stepSoundTickCounter % 4.0F == 0.0F)
                 {
-                    SoundType soundtype = block.getSoundType(iblockstate, minecraft.world, posBlock, minecraft.player);
+                    SoundType soundtype = block.getSoundType(blockState, minecraft.world, posBlock, minecraft.player);
                     playerController.mc.getSoundHandler().playSound(new PositionedSoundRecord(soundtype.getHitSound(), SoundCategory.NEUTRAL, (soundtype.getVolume() + 1.0F) / 8.0F, soundtype.getPitch() * 0.5F, posBlock));
                 }
 
                 ++playerController.stepSoundTickCounter;
-                playerController.mc.getTutorial().onHitBlock(playerController.mc.world, posBlock, iblockstate, MathHelper.clamp(playerController.curBlockDamageMP, 0.0F, 1.0F));
+                playerController.mc.getTutorial().onHitBlock(playerController.mc.world, posBlock, blockState, MathHelper.clamp(playerController.curBlockDamageMP, 0.0F, 1.0F));
 
                 if (playerController.curBlockDamageMP >= 1.0F)
                 {
